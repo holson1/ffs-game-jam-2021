@@ -1,3 +1,3 @@
-function handyfunc(x, y)
+function plus(x, y)
     return x + y
 end
