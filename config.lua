@@ -1,9 +1,7 @@
 local _M = {
-    cart_path = "build/test.p8",
-    sourceFiles = {
-        "src/test.lua",
-        "src/mylib.lua"
-    },
+    input_cart_path = "build/test.p8",
+    output_cart_path = "build/test.p8",
+    source_dir = 'src/',
     watch = true
 }
 
