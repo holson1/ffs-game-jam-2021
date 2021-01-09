@@ -1,6 +1,6 @@
 local _M = {
-    input_cart_path = "build/test.p8",
-    output_cart_path = "build/test.p8",
+    input_cart_path = "build/game_jam.p8",
+    output_cart_path = "build/game_jam.p8",
     source_dir = 'src/',
     watch = true
 }
