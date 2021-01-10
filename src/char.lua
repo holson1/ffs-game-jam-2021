@@ -1,4 +1,49 @@
-function handle_input()
+function init_char()
+    local char={
+        x=32,
+        y=64,
+        dx=0,
+        dy=0,
+        spr=001,
+        state='idle',
+        max_speed=3,
+
+        update=update_char,
+
+        draw=function(self)
+            sspr(8,0,16,16,self.x,self.y)
+        end
+    }
+    return char
+end
+
+function update_char(_char)
+    handle_input(_char)
+            
+    _char.x+=_char.dx	
+    _char.y+=_char.dy
+
+    _char.spr = set_spr(_char.state, 001)
+
+    -- friction
+    if _char.dx > 0.1 then
+        _char.dx -= 0.1
+    elseif _char.dx < -0.1 then
+        _char.dx += 0.1
+    else
+        _char.dx = 0
+    end
+
+    if _char.dy > 0.1 then
+        _char.dy -= 0.1
+    elseif _char.dy < -0.1 then
+        _char.dy += 0.1
+    else
+        _char.dy = 0
+    end
+end
+
+function handle_input(_char)
 
     local default_max_speed = 2.5
     local acceleration = 0.15
@@ -6,23 +51,23 @@ function handle_input()
 
     -- todo: proper diagonal handling / staircase effect
     if ((btn(0) or btn(1)) and (btn(2) or btn(3))) then
-        char.max_speed = default_max_speed * diagonal_speed_mod
+        _char.max_speed = default_max_speed * diagonal_speed_mod
     else
-        char.max_speed = default_max_speed
+        _char.max_speed = default_max_speed
     end
 
     -- l/r
     if btn(0) and not(btn(1)) then
-        char.dx = max(char.dx - acceleration, -char.max_speed)
+        _char.dx = max(_char.dx - acceleration, -_char.max_speed)
     elseif btn(1) and not(btn(0)) then
-        char.dx = min(char.dx + acceleration, char.max_speed)
+        _char.dx = min(_char.dx + acceleration, _char.max_speed)
     end
        
     -- u/d
     if btn(2) and not(btn(3)) then
-        char.dy = max(char.dy - acceleration, -char.max_speed)
+        _char.dy = max(_char.dy - acceleration, -_char.max_speed)
     elseif btn(3) and not(btn(2)) then
-        char.dy = min(char.dy + acceleration, char.max_speed)
+        _char.dy = min(_char.dy + acceleration, _char.max_speed)
     end
        
     -- x
