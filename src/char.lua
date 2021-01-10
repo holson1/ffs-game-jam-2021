@@ -5,25 +5,31 @@ function init_char()
         dx=0,
         dy=0,
         spr=001,
+        spri=1,
         state='idle',
         max_speed=3,
+        flip=false,
 
         update=update_char,
 
         draw=function(self)
-            sspr(8,0,16,16,self.x,self.y)
+            spr(self.spr,self.x,self.y,2,2,self.flip)
         end
     }
     return char
 end
 
 function update_char(_char)
+    if (t%4 == 0) then
+        _char.spri+=1
+    end
+
     handle_input(_char)
             
     _char.x+=_char.dx	
     _char.y+=_char.dy
 
-    _char.spr = set_spr(_char.state, 001)
+    --_char.spr = set_spr(_char.state, 001)
 
     -- friction
     if _char.dx > 0.1 then
@@ -59,15 +65,32 @@ function handle_input(_char)
     -- l/r
     if btn(0) and not(btn(1)) then
         _char.dx = max(_char.dx - acceleration, -_char.max_speed)
+        _char.flip = false
+
+        a = {007, 009}
+        -- todo: actual animation
+        -- _char.spr=a[max(1,_char.spri % 3)]
+        if t%4 == 0 then
+            if _char.spr == 007 then
+                _char.spr = 009
+            else
+                _char.spr = 007
+            end
+        end
+            
     elseif btn(1) and not(btn(0)) then
         _char.dx = min(_char.dx + acceleration, _char.max_speed)
+        _char.flip = true
+        _char.spr = 003
     end
        
     -- u/d
     if btn(2) and not(btn(3)) then
         _char.dy = max(_char.dy - acceleration, -_char.max_speed)
+        _char.spr = 013
     elseif btn(3) and not(btn(2)) then
         _char.dy = min(_char.dy + acceleration, _char.max_speed)
+        _char.spr = 005
     end
        
     -- x
