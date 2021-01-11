@@ -51,8 +51,8 @@ end
 
 function handle_input(_char)
 
-    local default_max_speed = 2.5
-    local acceleration = 0.15
+    local default_max_speed = 2
+    local acceleration = 0.25
     local diagonal_speed_mod = .707
 
     -- todo: proper diagonal handling / staircase effect
@@ -62,32 +62,38 @@ function handle_input(_char)
         _char.max_speed = default_max_speed
     end
 
-    -- l/r
-    if btn(0) and not(btn(1)) then
-        _char.dx = max(_char.dx - acceleration, -_char.max_speed)
-        _char.flip = false
-
+    if (btn(0) or btn(1)) then
         a = {007, 009}
         -- todo: actual animation
         -- _char.spr=a[max(1,_char.spri % 3)]
         if t%4 == 0 then
             if _char.spr == 007 then
                 _char.spr = 009
+            elseif _char.spr == 009 then
+                _char.spr = 011
+            elseif _char.spr == 011 then
+                _char.spr = 013
             else
                 _char.spr = 007
             end
         end
-            
+    end
+
+
+    -- l/r
+    if btn(0) and not(btn(1)) then
+        _char.dx = max(_char.dx - acceleration, -_char.max_speed)
+        _char.flip = false
     elseif btn(1) and not(btn(0)) then
         _char.dx = min(_char.dx + acceleration, _char.max_speed)
         _char.flip = true
-        _char.spr = 003
+        -- _char.spr = 003
     end
        
     -- u/d
     if btn(2) and not(btn(3)) then
         _char.dy = max(_char.dy - acceleration, -_char.max_speed)
-        _char.spr = 013
+        _char.spr = 035
     elseif btn(3) and not(btn(2)) then
         _char.dy = min(_char.dy + acceleration, _char.max_speed)
         _char.spr = 005
