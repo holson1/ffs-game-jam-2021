@@ -1,5 +1,5 @@
 _log={}
-log_l=1
+log_l=3
 for i=1,log_l do
     add(_log,'')
 end
@@ -10,13 +10,16 @@ end
    
 function debug()
     vars = {
-        'x='..char.x,
-        'y='..char.y,
-        'dx='..char.dx,
-        'dy='..char.dy,
-        "camx="..cam.x,
-        "camy="..cam.y
-        --'state='..char.state
+        --'x='..char.x,
+        --'y='..char.y,
+        --'dx='..char.dx,
+        --'dy='..char.dy,
+        --"camx="..cam.x,
+        --"camy="..cam.y
+        'state='..char.state,
+        'facing='..char.facing,
+        't='..t,
+        'spri='..char.spri,
         --'shots='..count(shots._)
     }
 

@@ -17,6 +17,16 @@ function _init()
  
     char=init_char()
     --crocs:new({x=80,y=112,d=true})
+
+    gun={
+        x=0,
+        y=0
+    }
+
+    crosshair = {
+        x=0,
+        y=0
+    }
 end
    
 function _update()
@@ -24,30 +34,6 @@ function _update()
  
     char:update()
 
-    -- handle_input()
-       
-    -- char.x+=char.dx	
-    -- char.y+=char.dy
-   
-    -- char.spr = set_spr(char.state, 001)
-   
-    -- -- friction
-    -- if char.dx > 0.1 then
-    --     char.dx -= 0.1
-    -- elseif char.dx < -0.1 then
-    --     char.dx += 0.1
-    -- else
-    --     char.dx = 0
-    -- end
-
-    -- if char.dy > 0.1 then
-    --     char.dy -= 0.1
-    -- elseif char.dy < -0.1 then
-    --     char.dy += 0.1
-    -- else
-    --     char.dy = 0
-    -- end
-    
     shots:update()
     booms:update()
     crocs:update()
@@ -58,6 +44,28 @@ function _update()
 
     cam.x = char.x - 64
     cam.y = char.y - 64
+
+    gun.x = char.x
+    gun.y = char.y
+    if (t < 16) then
+        gun.y+=1
+    end
+
+
+    -- todo: proper circle movement
+    if char.flip then
+        crosshair.x = char.x + 4 + 32
+    else
+        crosshair.x = char.x + 4 - 32
+    end
+
+    if char.facing == 'u' then
+        crosshair.y = char.y + 4 - 32
+    elseif char.facing == 'd' then
+        crosshair.y = char.y + 4 + 32
+    else
+        crosshair.y = char.y + 4
+    end
 end
    
 function _draw()
@@ -65,7 +73,21 @@ function _draw()
     camera(cam.x, cam.y)
     map(0,0,0,0,32,32)
 
+
+    -- todo: proper gun following
+    -- if char.facing == 'u' then
+    --     spr(192,gun.x,gun.y,2,2,char.flip)
+    -- end
+
     char:draw()
+
+    -- todo: proper gun following
+    -- if char.facing ~= 'u' then
+    --     spr(192,gun.x+2,gun.y,2,2,char.flip)
+    -- end
+
+    -- todo: crosshair? good for debug
+    spr(194,crosshair.x,crosshair.y)
 
     shots:draw()
     booms:draw()
