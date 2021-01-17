@@ -1,5 +1,5 @@
 _log={}
-log_l=3
+log_l=1
 for i=1,log_l do
     add(_log,'')
 end
@@ -20,6 +20,7 @@ function debug()
         'facing='..char.facing,
         't='..t,
         'spri='..char.spri,
+        "angle="..char.angle,
         --'shots='..count(shots._)
     }
 

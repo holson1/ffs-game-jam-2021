@@ -8,6 +8,7 @@ function init_char()
         spri=0,
         state='idle',
         facing='n',
+        angle=0.5,
         max_speed=3,
         flip=false,
 
@@ -88,6 +89,26 @@ function handle_input(_char)
         _char.dy = min(_char.dy + acceleration, _char.max_speed)
         _char.facing = 'd'
     end
+
+    -- todo: fold into code above
+    -- angle calculation
+    if not(btn(0)) and btn(1) and not(btn(2)) and not(btn(3)) then
+        _char.angle = 0
+    elseif not(btn(0)) and btn(1) and not(btn(2)) and btn(3) then
+        _char.angle = 0.125
+    elseif not(btn(0)) and not(btn(1)) and not(btn(2)) and btn(3) then
+        _char.angle = 0.25
+    elseif btn(0) and not(btn(1)) and not(btn(2)) and btn(3) then
+        _char.angle = 0.375
+    elseif btn(0) and not(btn(1)) and not(btn(2)) and not(btn(3)) then
+        _char.angle = 0.5
+    elseif btn(0) and not(btn(1)) and btn(2) and not(btn(3)) then
+        _char.angle = 0.625
+    elseif not(btn(0)) and not(btn(1)) and btn(2) and not(btn(3)) then
+        _char.angle = 0.75
+    elseif not(btn(0)) and btn(1) and btn(2) and not(btn(3)) then
+        _char.angle = 0.875
+    end
        
     -- x
     if btn(5) then
@@ -95,7 +116,13 @@ function handle_input(_char)
    
     -- z
     if btnp(4) then
-        sfx(2)
+        -- sfx(2)
+        shots:new({
+            x=_char.x + 4,
+            y=_char.y + 4,
+            dx=cos(_char.angle) * 4,
+            dy=-sin(_char.angle) * 4
+        })
     end
 end
   

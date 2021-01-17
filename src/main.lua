@@ -20,7 +20,8 @@ function _init()
 
     gun={
         x=0,
-        y=0
+        y=0,
+        spr=196
     }
 
     crosshair = {
@@ -45,27 +46,21 @@ function _update()
     cam.x = char.x - 64
     cam.y = char.y - 64
 
-    gun.x = char.x
-    gun.y = char.y
-    if (t < 16) then
-        gun.y+=1
+    -- gun stuff
+    gun.x = char.x + 4
+    gun.y = char.y + 8
+    if char.angle == 0.25 then
+        gun.spr = 196
+    elseif char.angle == 0.375 or char.angle == 0.125 then
+        gun.spr = 198
+    elseif char.angle == 0.5 or char.angle == 0 then
+        gun.spr = 197
+    elseif char.angle == 0.625 then
+        gun.spr = 199
     end
 
-
-    -- todo: proper circle movement
-    if char.flip then
-        crosshair.x = char.x + 4 + 32
-    else
-        crosshair.x = char.x + 4 - 32
-    end
-
-    if char.facing == 'u' then
-        crosshair.y = char.y + 4 - 32
-    elseif char.facing == 'd' then
-        crosshair.y = char.y + 4 + 32
-    else
-        crosshair.y = char.y + 4
-    end
+    crosshair.x = (char.x + 4) + (cos(char.angle) * 48)
+    crosshair.y = (char.y + 4) - (sin(char.angle) * 48)
 end
    
 function _draw()
@@ -76,20 +71,19 @@ function _draw()
 
     -- todo: proper gun following
     -- if char.facing == 'u' then
-    --     spr(192,gun.x,gun.y,2,2,char.flip)
+    --     spr(196,gun.x,gun.y,1,1,char.flip)
     -- end
 
-    char:draw()
 
-    -- todo: proper gun following
-    -- if char.facing ~= 'u' then
-    --     spr(192,gun.x+2,gun.y,2,2,char.flip)
-    -- end
-
-    -- todo: crosshair? good for debug
     spr(194,crosshair.x,crosshair.y)
 
     shots:draw()
+    char:draw()
+
+    if char.facing ~= 'u' then
+        spr(gun.spr,gun.x,gun.y,1,1,char.flip)
+    end
+
     booms:draw()
     crocs:draw()
    
