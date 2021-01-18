@@ -210,6 +210,7 @@ function debug()
         't='..t,
         'spri='..char.spri,
         "angle="..char.angle,
+        "action_time="..char.action_time,
         --'shots='..count(shots._)
     }
 
@@ -238,6 +239,8 @@ function init_char()
         facing='n',
         angle=0.5,
         max_speed=3,
+        action_time=0,
+        can_dash=true,
         flip=false,
 
         states={
@@ -255,6 +258,11 @@ function init_char()
                 n={003}
             },
             walk={
+                u={037, 037, 039, 039},
+                d={043, 043, 041, 041},
+                n={007,009,011,013}
+            },
+            dash={
                 u={037, 037, 039, 039},
                 d={043, 043, 041, 041},
                 n={007,009,011,013}
@@ -283,6 +291,19 @@ function update_char(_char)
         _char.spri = (_char.spri + 1) % 16
         set_spr(_char)
     end
+
+    -- todo: clean up this spaghetti
+    if _char.state == 'dash' then
+
+        add_new_dust(_char.x + 8, _char.y + 14, 0, 0, 5, rnd(2) + 2, 0, 1)
+
+        if _char.action_time >= 8 then
+            _char.state = 'walk'
+            _char.can_dash = true
+        else
+            _char.action_time += 1
+        end
+    end
 end
 
 function handle_input(_char)
@@ -298,45 +319,27 @@ function handle_input(_char)
         _char.max_speed = default_max_speed
     end
 
-    -- l/r
-    if btn(0) and not(btn(1)) then
-        _char.dx = max(_char.dx - acceleration, -_char.max_speed)
-        _char.flip = false
-        _char.facing = 'n'
-    elseif btn(1) and not(btn(0)) then
-        _char.dx = min(_char.dx + acceleration, _char.max_speed)
-        _char.flip = true
-        _char.facing = 'n'
+    if _char.state ~= 'dash' then
+        -- l/r
+        if btn(0) and not(btn(1)) then
+            _char.dx = max(_char.dx - acceleration, -_char.max_speed)
+            _char.flip = false
+            _char.facing = 'n'
+        elseif btn(1) and not(btn(0)) then
+            _char.dx = min(_char.dx + acceleration, _char.max_speed)
+            _char.flip = true
+            _char.facing = 'n'
+        end
+        
+        -- u/d
+        if btn(2) and not(btn(3)) then
+            _char.dy = max(_char.dy - acceleration, -_char.max_speed)
+            _char.facing = 'u'
+        elseif btn(3) and not(btn(2)) then
+            _char.dy = min(_char.dy + acceleration, _char.max_speed)
+            _char.facing = 'd'
+        end
     end
-       
-    -- u/d
-    if btn(2) and not(btn(3)) then
-        _char.dy = max(_char.dy - acceleration, -_char.max_speed)
-        _char.facing = 'u'
-    elseif btn(3) and not(btn(2)) then
-        _char.dy = min(_char.dy + acceleration, _char.max_speed)
-        _char.facing = 'd'
-    end
-
-    -- todo: fold into code above
-    -- angle calculation
-    -- if not(btn(0)) and btn(1) and not(btn(2)) and not(btn(3)) then
-    --     _char.angle = 0
-    -- elseif not(btn(0)) and btn(1) and not(btn(2)) and btn(3) then
-    --     _char.angle = 0.125
-    -- elseif not(btn(0)) and not(btn(1)) and not(btn(2)) and btn(3) then
-    --     _char.angle = 0.25
-    -- elseif btn(0) and not(btn(1)) and not(btn(2)) and btn(3) then
-    --     _char.angle = 0.375
-    -- elseif btn(0) and not(btn(1)) and not(btn(2)) and not(btn(3)) then
-    --     _char.angle = 0.5
-    -- elseif btn(0) and not(btn(1)) and btn(2) and not(btn(3)) then
-    --     _char.angle = 0.625
-    -- elseif not(btn(0)) and not(btn(1)) and btn(2) and not(btn(3)) then
-    --     _char.angle = 0.75
-    -- elseif not(btn(0)) and btn(1) and btn(2) and not(btn(3)) then
-    --     _char.angle = 0.875
-    -- end
 
     -- better angle code
     if btn(0) or btn(1) or btn(2) or btn(3) then
@@ -344,12 +347,22 @@ function handle_input(_char)
     end
        
     -- x
-    if btn(5) then
+    if btnp(5) then
+        if _char.can_dash then
+            _char.action_time = 0
+            _char.state = 'dash'
+            _char.can_dash = false
+            _char.dx = cos(_char.angle) * 4
+            _char.dy = -sin(_char.angle) * 4
+        end
     end
    
     -- z
     if btnp(4) then
         -- sfx(2)
+
+        add_new_dust(_char.x + 6, _char.y + 8, -cos(_char.angle), sin(_char.angle), 5, rnd(5) + 2, 0.1, 7)
+
         shots:new({
             x=_char.x + 4,
             y=_char.y + 4,
@@ -384,7 +397,7 @@ function update_position(_char)
     -- update state based on current dx/dy
     if (_char.dx == 0 and _char.dy == 0) then
         _char.state = 'idle'
-    else
+    elseif _char.state ~= 'dash' then
         _char.state = 'walk'
     end
 end
@@ -405,16 +418,17 @@ zombie={
     x=nil,
     y=nil,
     d=nil,
-    state='walk',
+    state='idle',
     spri=0,
 
     animations={
+        idle={144},
         walk={144,146}
     },
 
     update=function(self)
         local movespeed = 0.25
-        local aggro_range = 64
+        local aggro_range = 32
 
         -- todo: generic animation code for all enemies
         if (t%16 == 0) then
@@ -423,12 +437,16 @@ zombie={
             local transformed_spri = (self.spri % #anim) + 1
             
             self.s = anim[transformed_spri]
+            -- slime
+            add_new_dust(self.x + 2 + rnd(6), self.y + 4 + rnd(4), 0, 0, 5, rnd(2), 0.7, 3)
+            add_new_dust(self.x + 8, self.y + 15, 0, 0, 90, 1, 0, 3) 
         end
 
         -- aggro
         if abs(self.x - char.x) > aggro_range and abs(self.y - char.y) > aggro_range then
-            -- patrol
+            self.state = 'idle'
         else
+            self.state = 'walk'
             -- todo: proper pathing code
 
             -- calculate angle to player
@@ -438,7 +456,6 @@ zombie={
             self.x -= cos(angle) * movespeed
             self.y += sin(angle) * movespeed
         end
-
     end
 }
 -->8
@@ -530,7 +547,7 @@ __gfx__
 00000330333000000000033003330000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000330033000000000330000330000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00003300033000000003300000300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-00333333333330000033333333333000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+00033333333300000033333333333000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

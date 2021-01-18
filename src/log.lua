@@ -21,6 +21,7 @@ function debug()
         't='..t,
         'spri='..char.spri,
         "angle="..char.angle,
+        "action_time="..char.action_time,
         --'shots='..count(shots._)
     }
 
