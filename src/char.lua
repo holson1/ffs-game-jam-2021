@@ -4,6 +4,8 @@ function init_char()
         y=64,
         dx=0,
         dy=0,
+        last_dx=0,
+        last_dy=0,
         spr=001,
         spri=0,
         state='idle',
@@ -92,22 +94,27 @@ function handle_input(_char)
 
     -- todo: fold into code above
     -- angle calculation
-    if not(btn(0)) and btn(1) and not(btn(2)) and not(btn(3)) then
-        _char.angle = 0
-    elseif not(btn(0)) and btn(1) and not(btn(2)) and btn(3) then
-        _char.angle = 0.125
-    elseif not(btn(0)) and not(btn(1)) and not(btn(2)) and btn(3) then
-        _char.angle = 0.25
-    elseif btn(0) and not(btn(1)) and not(btn(2)) and btn(3) then
-        _char.angle = 0.375
-    elseif btn(0) and not(btn(1)) and not(btn(2)) and not(btn(3)) then
-        _char.angle = 0.5
-    elseif btn(0) and not(btn(1)) and btn(2) and not(btn(3)) then
-        _char.angle = 0.625
-    elseif not(btn(0)) and not(btn(1)) and btn(2) and not(btn(3)) then
-        _char.angle = 0.75
-    elseif not(btn(0)) and btn(1) and btn(2) and not(btn(3)) then
-        _char.angle = 0.875
+    -- if not(btn(0)) and btn(1) and not(btn(2)) and not(btn(3)) then
+    --     _char.angle = 0
+    -- elseif not(btn(0)) and btn(1) and not(btn(2)) and btn(3) then
+    --     _char.angle = 0.125
+    -- elseif not(btn(0)) and not(btn(1)) and not(btn(2)) and btn(3) then
+    --     _char.angle = 0.25
+    -- elseif btn(0) and not(btn(1)) and not(btn(2)) and btn(3) then
+    --     _char.angle = 0.375
+    -- elseif btn(0) and not(btn(1)) and not(btn(2)) and not(btn(3)) then
+    --     _char.angle = 0.5
+    -- elseif btn(0) and not(btn(1)) and btn(2) and not(btn(3)) then
+    --     _char.angle = 0.625
+    -- elseif not(btn(0)) and not(btn(1)) and btn(2) and not(btn(3)) then
+    --     _char.angle = 0.75
+    -- elseif not(btn(0)) and btn(1) and btn(2) and not(btn(3)) then
+    --     _char.angle = 0.875
+    -- end
+
+    -- better angle code
+    if btn(0) or btn(1) or btn(2) or btn(3) then
+        _char.angle = atan2(_char.dx, -_char.dy)
     end
        
     -- x

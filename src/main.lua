@@ -13,10 +13,10 @@ function _init()
        
     shots=new_group(shot)
     booms=new_group(boom)
-    crocs=new_group(croc)
+    zombies=new_group(zombie)
  
     char=init_char()
-    --crocs:new({x=80,y=112,d=true})
+    zombies:new({x=80, y=32, d=true})
 
     gun={
         x=0,
@@ -37,7 +37,7 @@ function _update()
 
     shots:update()
     booms:update()
-    crocs:update()
+    zombies:update()
    
     for d in all(dust) do
         d:update()
@@ -70,9 +70,9 @@ function _draw()
 
 
     -- todo: proper gun following
-    -- if char.facing == 'u' then
-    --     spr(196,gun.x,gun.y,1,1,char.flip)
-    -- end
+    if char.facing == 'u' then
+        spr(gun.spr,gun.x,gun.y,1,1,char.flip)
+    end
 
 
     spr(194,crosshair.x,crosshair.y)
@@ -85,7 +85,7 @@ function _draw()
     end
 
     booms:draw()
-    crocs:draw()
+    zombies:draw()
    
     for d in all(dust) do
         d:draw()
