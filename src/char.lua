@@ -148,6 +148,14 @@ end
 function update_position(_char)
     local friction = 0.2
 
+    -- check collision before any movement
+    local new_xpos = _char.x + _char.dx
+    local new_ypos = _char.y + _char.dy
+
+    
+
+
+
     _char.x+=_char.dx	
     _char.y+=_char.dy
 

@@ -1,5 +1,5 @@
 _log={}
-log_l=1
+log_l=4
 for i=1,log_l do
     add(_log,'')
 end

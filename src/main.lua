@@ -28,6 +28,8 @@ function _init()
         x=0,
         y=0
     }
+
+    map = generate_map()
 end
    
 function _update()
@@ -66,8 +68,9 @@ end
 function _draw()
     cls()
     camera(cam.x, cam.y)
-    map(0,0,0,0,32,32)
 
+    -- custom map code
+    draw_map(map)
 
     -- todo: proper gun following
     if char.facing == 'u' then
