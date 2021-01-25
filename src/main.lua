@@ -73,9 +73,9 @@ function _draw()
     draw_map(map)
 
     -- todo: proper gun following
-    if char.facing == 'u' then
-        spr(gun.spr,gun.x,gun.y,1,1,char.flip)
-    end
+    -- if char.facing == 'u' then
+    --     spr(gun.spr,gun.x,gun.y,1,1,char.flip)
+    -- end
 
 
     spr(194,crosshair.x,crosshair.y)
@@ -83,9 +83,9 @@ function _draw()
     shots:draw()
     char:draw()
 
-    if char.facing ~= 'u' then
-        spr(gun.spr,gun.x,gun.y,1,1,char.flip)
-    end
+    -- if char.facing ~= 'u' then
+    --     spr(gun.spr,gun.x,gun.y,1,1,char.flip)
+    -- end
 
     booms:draw()
     zombies:draw()
