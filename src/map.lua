@@ -1,34 +1,37 @@
-MAP_SIZE=64 -- map size in tiles
+-- TODO: delete this file once map2 is fully functional
+-- and maybe steal the start/end pieces from it
 
-empty = {
-    spr=064,
-    flag=0
-}
+-- MAP_SIZE=64 -- map size in tiles
 
-wall = {
-    spr=079,
-    flag=1
-}
+-- empty = {
+--     spr=064,
+--     flag=0
+-- }
 
-floor = {
-    spr=095,
-    flag=0
-}
+-- wall = {
+--     spr=079,
+--     flag=1
+-- }
 
-hall = {
-    spr=070,
-    flag=0
-}
+-- floor = {
+--     spr=095,
+--     flag=0
+-- }
 
-start = {
-    spr=086,
-    flag=0
-}
+-- hall = {
+--     spr=070,
+--     flag=0
+-- }
 
-exit = {
-    spr=085,
-    flag=7
-}
+-- start = {
+--     spr=086,
+--     flag=0
+-- }
+
+-- exit = {
+--     spr=085,
+--     flag=7
+-- }
 
 
 function create_room(_map, x, y, min_wh, max_wh)

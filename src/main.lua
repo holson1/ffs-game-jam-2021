@@ -29,7 +29,7 @@ function _init()
         y=0
     }
 
-    map = generate_map()
+    map = generate_map_new()
 end
    
 function _update()
@@ -70,7 +70,7 @@ function _draw()
     camera(cam.x, cam.y)
 
     -- custom map code
-    draw_map(map)
+    draw_map_new(map)
 
     -- todo: proper gun following
     -- if char.facing == 'u' then
