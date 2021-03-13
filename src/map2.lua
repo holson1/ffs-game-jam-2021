@@ -16,6 +16,16 @@ floor = {
     flag=0
 }
 
+highlighted_wall = {
+    spr=111,
+    flag=1
+}
+
+highlighted_floor = {
+    spr=111,
+    flag=0
+}
+
 hall = {
     spr=070,
     flag=0
